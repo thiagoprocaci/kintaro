@@ -28,6 +28,7 @@ public class World extends GameEntity implements IWorld {
 
 	public World() {
 		super(0, 0, 0, 570, 450);
+
 	}
 
 	/**
