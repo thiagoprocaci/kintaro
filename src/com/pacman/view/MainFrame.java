@@ -56,22 +56,22 @@ public class MainFrame extends DialogFrame implements Runnable {
 
 	@Override
 	protected void onDownPressed() {
-		world.moveDownPacMan();
+		world.moveDown(null);
 	}
 
 	@Override
 	protected void onLeftPressed() {
-		world.moveLeftPacMan();
+		world.moveLeft(null);
 	}
 
 	@Override
 	protected void onRightPressed() {
-		world.moveRightPacMan();
+		world.moveRight(null);
 	}
 
 	@Override
 	protected void onUpPressed() {
-		world.moveUpPacMan();
+		world.moveUp(null);
 	}
 
 	@Override

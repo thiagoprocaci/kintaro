@@ -12,11 +12,6 @@ import java.util.Random;
 @SuppressWarnings("serial")
 public abstract class GameEntity implements IPaintable {
 
-	public static final int MAX_X = 540;
-	public static final int MAX_Y = 430;
-	public static final int MIN_X = 0;
-	public static final int MIN_Y = 0;
-
 	protected static final int LEFT = 0;
 	protected static final int RIGHT = 1;
 	protected static final int UP = 2;
@@ -139,27 +134,27 @@ public abstract class GameEntity implements IPaintable {
 		return new Dimension(width, height);
 	}
 
-	protected void moveUp() {
-		if (canMoveUp()) {
+	public void moveUp(IWorld world) {
+		if (canMoveUp(world)) {
 			setY(getY() - getSpeed());
 		}
 	}
 
-	protected void moveDown() {
-		if (canMoveDown()) {
+	public void moveDown(IWorld world) {
+		if (canMoveDown(world)) {
 			setY(getY() + getSpeed());
 		}
 	}
 
-	protected void moveLeft() {
-		if (canMoveLeft()) {
+	public void moveLeft(IWorld world) {
+		if (canMoveLeft(world)) {
 			setX(getX() - getSpeed());
 		}
 
 	}
 
-	protected void moveRight() {
-		if (canMoveRight()) {
+	public void moveRight(IWorld world) {
+		if (canMoveRight(world)) {
 			setX(getX() + getSpeed());
 		}
 	}
@@ -167,20 +162,20 @@ public abstract class GameEntity implements IPaintable {
 	// os canMoves da entitdade abstrada somente confere os limites do mundo.
 	// nao levam em conta a presenca de obstaculos
 
-	protected boolean canMoveUp() {
-		return (isMoving() && getX() > MIN_X && getY() - getSpeed() > MIN_Y);
+	public boolean canMoveUp(IWorld world) {
+		return (isMoving() && getX() > IWorld.MIN_X && getY() - getSpeed() > IWorld.MIN_Y);
 	}
 
-	protected boolean canMoveDown() {
-		return (isMoving() && getX() < MAX_X && getY() + getSpeed() < MAX_Y);
+	public boolean canMoveDown(IWorld world) {
+		return (isMoving() && getX() < IWorld.MAX_X && getY() + getSpeed() < IWorld.MAX_Y);
 	}
 
-	protected boolean canMoveLeft() {
-		return (isMoving() && getX() - getSpeed() > MIN_X && getY() > MIN_Y);
+	public boolean canMoveLeft(IWorld world) {
+		return (isMoving() && getX() - getSpeed() > IWorld.MIN_X && getY() > IWorld.MIN_Y);
 	}
 
-	protected boolean canMoveRight() {
-		return (isMoving() && getX() + getSpeed() < MAX_X && getY() < MAX_Y);
+	public boolean canMoveRight(IWorld world) {
+		return (isMoving() && getX() + getSpeed() < IWorld.MAX_X && getY() < IWorld.MAX_Y);
 	}
 
 

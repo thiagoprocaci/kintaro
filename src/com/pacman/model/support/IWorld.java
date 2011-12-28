@@ -15,6 +15,14 @@ import com.pacman.model.PacMan;
  */
 public interface IWorld {
 
+	// limites do mundo
+	public static final int MAX_X = 540;
+	public static final int MAX_Y = 430;
+	public static final int MIN_X = 0;
+	public static final int MIN_Y = 0;
+
+	String getName();
+
 	PacMan getPacMan();
 
 	Collection<Block> getBlocks();

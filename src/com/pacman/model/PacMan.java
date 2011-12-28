@@ -6,6 +6,7 @@ import java.util.Collection;
 import com.pacman.image.ImageConstants;
 import com.pacman.image.ImageManager;
 import com.pacman.model.support.GameEntity;
+import com.pacman.model.support.IWorld;
 
 /**
  * Entidade que representa o pacman
@@ -20,11 +21,14 @@ public class PacMan extends GameEntity {
 	private static final int MOUTH_OPENED = 2;
 	private int currentMouthState = 1;
 	private int currentDirection = LEFT;
-	private PacMan pacAux;
+	private int previousValidX;
+	private int previousValidY;
 
 	public PacMan() {
 		super(10, 10, 3, 22, 22);
 		setMoving(true);
+		previousValidX = getX();
+		previousValidY = getY();
 	}
 
 	/**
@@ -60,51 +64,39 @@ public class PacMan extends GameEntity {
 		}
 	}
 
-	/**
-	 * Move PacMan para cima
-	 */
-	public void moveUp(Collection<Block> blocks, Collection<Fruit> fruits) {
-		if (canMove(blocks, UP)) {
-			if (currentDirection != UP)
-				currentDirection = UP;
-			moveUp();
-			eatFruit(fruits);
+	@Override
+	public void moveUp(IWorld world) {
+		if (canMove(world, UP)) {
+			currentDirection = UP;
+			super.moveUp(world);
+			eatFruit(world.getFruits());
 		}
 	}
 
-	/**
-	 * Move PacMan para baixo
-	 */
-	public void moveDown(Collection<Block> blocks, Collection<Fruit> fruits) {
-		if (canMove(blocks, DOWN)) {
-			if (currentDirection != DOWN)
-				currentDirection = DOWN;
-			moveDown();
-			eatFruit(fruits);
+	@Override
+	public void moveDown(IWorld world) {
+		if (canMove(world, DOWN)) {
+			currentDirection = DOWN;
+			super.moveDown(world);
+			eatFruit(world.getFruits());
 		}
 	}
 
-	/**
-	 * Move PacMan para esquerda
-	 */
-	public void moveLeft(Collection<Block> blocks, Collection<Fruit> fruits) {
-		if (canMove(blocks, LEFT)) {
-			if (currentDirection != LEFT)
-				currentDirection = LEFT;
-			moveLeft();
-			eatFruit(fruits);
+	@Override
+	public void moveLeft(IWorld world) {
+		if (canMove(world, LEFT)) {
+			currentDirection = LEFT;
+			super.moveLeft(world);
+			eatFruit(world.getFruits());
 		}
 	}
 
-	/**
-	 * Move PacMan para direita
-	 */
-	public void moveRight(Collection<Block> blocks, Collection<Fruit> fruits) {
-		if (canMove(blocks, RIGHT)) {
-			if (currentDirection != RIGHT)
-				currentDirection = RIGHT;
-			moveRight();
-			eatFruit(fruits);
+	@Override
+	public void moveRight(IWorld world) {
+		if (canMove(world, RIGHT)) {
+			currentDirection = RIGHT;
+			super.moveRight(world);
+			eatFruit(world.getFruits());
 		}
 	}
 
@@ -112,36 +104,41 @@ public class PacMan extends GameEntity {
 	 * Atualiza o estado da boca do pacMan
 	 */
 	private void updateMouth() {
-		if (currentMouthState == MOUTH_CLOSED)
+		switch (currentMouthState) {
+		case MOUTH_CLOSED:
 			currentMouthState = MOUTH_OPENING;
-		else if (currentMouthState == MOUTH_OPENING)
+			break;
+		case MOUTH_OPENING:
 			currentMouthState = MOUTH_OPENED;
-		else if (currentMouthState == MOUTH_OPENED)
+			break;
+		default:
 			currentMouthState = MOUTH_CLOSED;
+			break;
+		}
 	}
 
-	/**
-	 * Verifica se o PacMan podera mover
-	 *
-	 * @param blocks
-	 *
-	 */
-	private boolean canMove(Collection<Block> blocks, int direction) {
-		if (pacAux == null)
-			pacAux = new PacMan();
-		pacAux.setX(getX());
-		pacAux.setY(getY());
-		if (direction == LEFT)
-			pacAux.moveLeft();
-		else if (direction == RIGHT)
-			pacAux.moveRight();
-		else if (direction == UP)
-			pacAux.moveRight();
-		else if (direction == DOWN)
-			pacAux.moveDown();
-		for (Block block : blocks)
-			if (pacAux.detectColision(block))
-				return false;
+	private boolean canMove(IWorld world, int direction) {
+		switch (direction) {
+		case LEFT:
+			super.moveLeft(world);
+			break;
+		case RIGHT:
+			super.moveRight(world);
+			break;
+		case UP:
+			super.moveUp(world);
+			break;
+		case DOWN:
+			super.moveDown(world);
+			break;
+		}
+		if (detectColision(world.getBlocks())) {
+			setX(previousValidX);
+			setY(previousValidY);
+			return false;
+		}
+		previousValidX = getX();
+		previousValidY = getY();
 		return true;
 	}
 

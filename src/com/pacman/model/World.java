@@ -28,7 +28,6 @@ public class World extends GameEntity implements IWorld {
 
 	public World() {
 		super(0, 0, 0, 570, 450);
-
 	}
 
 	/**
@@ -47,7 +46,6 @@ public class World extends GameEntity implements IWorld {
 		synchronized (ghosts) {
 			for (Ghost ghost : ghosts.values()){
 				ghost.paint(graphics);
-				ghost.move(blocks.values());
 			}
 		}
 		pacMan.paint(graphics);
@@ -155,19 +153,11 @@ public class World extends GameEntity implements IWorld {
 		return null;
 	}
 
-	/**
-	 *
-	 * @return Retorna o nome do cenario
-	 */
+	@Override
 	public String getName() {
 		return name;
 	}
 
-	/**
-	 * Seta nome do cenario
-	 *
-	 * @param name
-	 */
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -183,32 +173,24 @@ public class World extends GameEntity implements IWorld {
 			initMap();
 	}
 
-	/**
-	 * Move pacMan para cima
-	 */
-	public void moveUpPacMan() {
-		pacMan.moveUp(blocks.values(), fruits.values());
+	@Override
+	public void moveUp(IWorld world) {
+		pacMan.moveUp(this);
 	}
 
-	/**
-	 * Move pacMan para baixo
-	 */
-	public void moveDownPacMan() {
-		pacMan.moveDown(blocks.values(), fruits.values());
+	@Override
+	public void moveDown(IWorld world) {
+		pacMan.moveDown(this);
 	}
 
-	/**
-	 * Move pacMan para esquerda
-	 */
-	public void moveLeftPacMan() {
-		pacMan.moveLeft(blocks.values(), fruits.values());
+	@Override
+	public void moveLeft(IWorld world) {
+		pacMan.moveLeft(this);
 	}
 
-	/**
-	 * Move pacMan para direita
-	 */
-	public void moveRightPacMan() {
-		pacMan.moveRight(blocks.values(), fruits.values());
+	@Override
+	public void moveRight(IWorld world) {
+		pacMan.moveRight(this);
 	}
 
 	/**
@@ -243,8 +225,8 @@ public class World extends GameEntity implements IWorld {
 		map = new HashMap<String, Block>();
 		int x = 0;
 		int y = 0;
-		while (x <= GameEntity.MAX_X) {
-			while (y <= GameEntity.MAX_Y) {
+		while (x <= IWorld.MAX_X) {
+			while (y <= IWorld.MAX_Y) {
 				map.put(x + "," + y, new Block(x, y));
 				y += 30;
 			}
