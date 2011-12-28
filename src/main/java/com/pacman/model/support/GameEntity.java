@@ -1,6 +1,7 @@
 package com.pacman.model.support;
 
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.Collection;
 
@@ -9,7 +10,7 @@ import java.util.Collection;
  * Qualquer objeto que tenha coordenada x, y, largura e altura deve ser considerado um game entity.
  */
 @SuppressWarnings("serial")
-public abstract class GameEntity implements IPaintable {
+public  class GameEntity implements IPaintable {
 
 	protected static final int LEFT = 0;
 	protected static final int RIGHT = 1;
@@ -174,6 +175,12 @@ public abstract class GameEntity implements IPaintable {
 
 	public boolean canMoveRight(IWorld world) {
 		return (isMoving() && getX() + getSpeed() < IWorld.MAX_X && getY() < IWorld.MAX_Y);
+	}
+
+	@Override
+	public void paint(Graphics graphics) {
+		// TODO Auto-generated method stub
+
 	}
 
 
