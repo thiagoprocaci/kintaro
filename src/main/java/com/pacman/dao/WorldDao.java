@@ -44,7 +44,7 @@ public class WorldDao {
 	 */
 	public void save(World world) {
 		try {
-			String path = getPath() + world.getName();
+			String path = getPath() + "nomeMundo";
 			ObjectOutput out = new ObjectOutputStream(new FileOutputStream(path));
 			out.writeObject(world);
 			out.close();

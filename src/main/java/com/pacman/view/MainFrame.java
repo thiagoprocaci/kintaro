@@ -22,9 +22,9 @@ public class MainFrame extends DialogFrame implements Runnable {
 	private void initialize() {
 		graphics = (Graphics2D) getGraphics();
 	//	world = WorldDao.getInstance().getByName("teste");
-		world = new World();
+		world = new World(graphics);
 		world.setBuildMode(true);
-		setSize(world.getDimension());
+		setSize(world.getScenario().getDimension());
 	}
 
 	public static void main(String[] args) {
@@ -45,9 +45,10 @@ public class MainFrame extends DialogFrame implements Runnable {
 	@Override
 	public void run() {
 		while (!finish) {
-			world.paint(graphics);
+			world.update();
+			world.render();
 			try {
-				Thread.sleep(170);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -56,22 +57,22 @@ public class MainFrame extends DialogFrame implements Runnable {
 
 	@Override
 	protected void onDownPressed() {
-		world.moveDown(null);
+		world.moveDown();
 	}
 
 	@Override
 	protected void onLeftPressed() {
-		world.moveLeft(null);
+		world.moveLeft();
 	}
 
 	@Override
 	protected void onRightPressed() {
-		world.moveRight(null);
+		world.moveRight();
 	}
 
 	@Override
 	protected void onUpPressed() {
-		world.moveUp(null);
+		world.moveUp();
 	}
 
 	@Override
@@ -114,7 +115,7 @@ public class MainFrame extends DialogFrame implements Runnable {
 
 	@Override
 	protected void saveWorld() {
-		world.setName(value());
+		// world.setName(value());
 		WorldDao.getInstance().save(world);
 	}
 }

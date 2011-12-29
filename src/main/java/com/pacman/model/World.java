@@ -1,40 +1,57 @@
 package com.pacman.model;
 
 import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import com.pacman.image.ImageConstants;
-import com.pacman.image.ImageManager;
-import com.pacman.model.support.GameEntity;
+import com.pacman.model.enumeration.Direction;
 import com.pacman.model.support.IWorld;
+import com.pacman.system.IEntityActionManager;
+import com.pacman.system.core.PacManActionManager;
 
 /**
- * Cenario do jogo
- *
- * @author Thiago Baesso Procaci
- *
+ * Mundo
  */
-@SuppressWarnings("serial")
-public class World extends GameEntity implements IWorld {
-	private String name;
+public class World  implements IWorld {
+
 	private boolean buildMode = false;
+	// a direcao devera ser pegada do buffer
+	private Direction direction;
+
+
+
+	private Graphics graphics;
+
+	// personagens do jogo manipuladas pelo mundo
 	private Map<String, Block> map = null;
 	private Map<String, Block> blocks = new HashMap<String, Block>();
 	private Map<String, Fruit> fruits = new HashMap<String, Fruit>();
 	private Map<String, Ghost> ghosts = new HashMap<String, Ghost>();
+	private Scenario scenario = new  Scenario();
 	private PacMan pacMan = new PacMan();
 
-	public World() {
-		super(0, 0, 0, 570, 450);
+	private List<IEntityActionManager> entityActionManagerList = new ArrayList<IEntityActionManager>();
+
+	public World(Graphics graphics) {
+		this.graphics = graphics;
+		entityActionManagerList.add(new PacManActionManager(pacMan, blocks.values(), fruits.values()));
 	}
 
-	/**
-	 * Desenha o mundo
-	 */
-	public void paint(Graphics graphics) {
-		graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.SPACE_PAC.value()), getX(), getY(), null);
+	@Override
+	public void update() {
+		for (IEntityActionManager entityActionManager : entityActionManagerList) {
+			entityActionManager.act(direction);
+		}
+		direction = null;
+	}
+
+
+	@Override
+	public void render() {
+		scenario.paint(graphics);
 		synchronized (blocks) {
 			for (Block block : blocks.values())
 				block.paint(graphics);
@@ -44,12 +61,38 @@ public class World extends GameEntity implements IWorld {
 				fruit.paint(graphics);
 		}
 		synchronized (ghosts) {
-			for (Ghost ghost : ghosts.values()){
+			for (Ghost ghost : ghosts.values()) {
 				ghost.paint(graphics);
 			}
 		}
 		pacMan.paint(graphics);
 	}
+
+	public PacMan getPacMan() {
+		return pacMan;
+	}
+
+	public Collection<Block> getBlocks() {
+		return blocks.values();
+	}
+
+	public Collection<Fruit> getFruits() {
+		return fruits.values();
+	}
+
+	public Collection<Ghost> getGhots() {
+		return ghosts.values();
+	}
+
+	public Scenario getScenario() {
+		return scenario;
+	}
+
+
+
+
+
+// ----------------------------- isso deve ficar separado
 
 	/**
 	 * Metodo utilizado para a adicao ou remocao de blocos no cenario
@@ -74,6 +117,8 @@ public class World extends GameEntity implements IWorld {
 					}
 			}
 	}
+
+
 
 	/**
 	 * Metodo utilizado para a adicao ou remocao de monstros no cenario
@@ -119,48 +164,10 @@ public class World extends GameEntity implements IWorld {
 		addOrRemoveFruit(x, y, true);
 	}
 
-	/**
-	 *
-	 * @return Retorna pacMan
-	 */
-	@Override
-	public PacMan getPacMan() {
-		return pacMan;
-	}
 
 
-	@Override
-	public Collection<Block> getBlocks() {
-		if(blocks != null) {
-			return blocks.values();
-		}
-		return null;
-	}
 
-	@Override
-	public Collection<Fruit> getFruits() {
-		if(fruits != null) {
-			return fruits.values();
-		}
-		return null;
-	}
 
-	@Override
-	public Collection<Ghost> getGhots() {
-		if(ghosts != null) {
-			return ghosts.values();
-		}
-		return null;
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	/**
 	 * Ativa e desativa modo de construcao do cenario
@@ -173,24 +180,22 @@ public class World extends GameEntity implements IWorld {
 			initMap();
 	}
 
-	@Override
-	public void moveUp(IWorld world) {
-		pacMan.moveUp(this);
+// melhorar esquema de eventos
+
+	public void moveUp() {
+		direction = Direction.UP;
 	}
 
-	@Override
-	public void moveDown(IWorld world) {
-		pacMan.moveDown(this);
+	public void moveDown() {
+		direction = Direction.DOWN;
 	}
 
-	@Override
-	public void moveLeft(IWorld world) {
-		pacMan.moveLeft(this);
+	public void moveLeft() {
+		direction = Direction.LEFT;
 	}
 
-	@Override
-	public void moveRight(IWorld world) {
-		pacMan.moveRight(this);
+	public void moveRight() {
+		direction = Direction.RIGHT;
 	}
 
 	/**
@@ -235,14 +240,6 @@ public class World extends GameEntity implements IWorld {
 		}
 	}
 
-	@Override
-	public void render() {
-		// TODO Auto-generated method stub
-	}
 
-	@Override
-	public void update() {
-		// TODO Auto-generated method stub
-	}
 
 }

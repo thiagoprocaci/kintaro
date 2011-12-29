@@ -9,7 +9,7 @@ import com.pacman.model.support.GameEntity;
 /**
  * Entidade que representa o mostro do jogo
  *
- * @author Thiago Baesso Procaci
+ *
  *
  */
 @SuppressWarnings("serial")
@@ -19,7 +19,6 @@ public class Ghost extends GameEntity {
 
 	public Ghost(int x, int y) {
 		super(x, y, 5, 23, 23);
-		setMoving(true);
 	}
 
 	@Override
@@ -36,7 +35,7 @@ public class Ghost extends GameEntity {
 				graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.GHOST_SCARED_2.value()), getX(), getY(), null);
 		}
 		shift = !shift;
-		//TODO mover o mostro
+
 	}
 
 	public void setScared(boolean scared) {
