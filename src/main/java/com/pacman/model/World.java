@@ -9,8 +9,11 @@ import java.util.Map;
 
 import com.pacman.model.enumeration.Direction;
 import com.pacman.model.support.IWorld;
-import com.pacman.system.IEntityActionManager;
-import com.pacman.system.core.PacManActionManager;
+import com.pacman.system.physical.IEntityActionManager;
+import com.pacman.system.physical.IMovementManager;
+import com.pacman.system.physical.core.ColisionManager;
+import com.pacman.system.physical.core.MovementManager;
+import com.pacman.system.physical.core.PacManActionManager;
 
 /**
  * Mundo
@@ -37,7 +40,15 @@ public class World  implements IWorld {
 
 	public World(Graphics graphics) {
 		this.graphics = graphics;
-		entityActionManagerList.add(new PacManActionManager(pacMan, blocks.values(), fruits.values()));
+
+		// TODO a injecao de dependencia nao deve ficar aqui
+		IMovementManager movementManager = new MovementManager();
+		ColisionManager colisionManager =  new ColisionManager();
+		PacManActionManager pacManActionManager = new PacManActionManager(pacMan, blocks.values(), fruits.values());
+		pacManActionManager.setColisionManager(colisionManager);
+		pacManActionManager.setMovementManager(movementManager);
+
+		entityActionManagerList.add(pacManActionManager);
 	}
 
 	@Override

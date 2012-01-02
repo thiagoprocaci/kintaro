@@ -1,4 +1,4 @@
-package com.pacman.system.core;
+package com.pacman.system.physical.core;
 
 import java.util.Collection;
 
@@ -7,9 +7,9 @@ import com.pacman.model.Fruit;
 import com.pacman.model.PacMan;
 import com.pacman.model.enumeration.Direction;
 import com.pacman.model.enumeration.MouthState;
-import com.pacman.system.IColisionManager;
-import com.pacman.system.IEntityActionManager;
-import com.pacman.system.IMovementManager;
+import com.pacman.system.physical.IColisionManager;
+import com.pacman.system.physical.IEntityActionManager;
+import com.pacman.system.physical.IMovementManager;
 
 public class PacManActionManager implements IEntityActionManager {
 
@@ -20,11 +20,17 @@ public class PacManActionManager implements IEntityActionManager {
 	private Collection<Fruit> fruitList;
 
 	public PacManActionManager(PacMan pacMan, Collection<Block> blockList, Collection<Fruit> fruitList) {
-		this.movementManager = MovementManager.getInstance();
-		this.colisionManager = ColisionManager.getInstance();
 		this.pacMan = pacMan;
 		this.blockList = blockList;
 		this.fruitList = fruitList;
+	}
+
+	public void setMovementManager(IMovementManager movementManager) {
+		this.movementManager = movementManager;
+	}
+
+	public void setColisionManager(IColisionManager colisionManager) {
+		this.colisionManager = colisionManager;
 	}
 
 	@Override
@@ -93,5 +99,7 @@ public class PacManActionManager implements IEntityActionManager {
 			break;
 		}
 	}
+
+
 
 }

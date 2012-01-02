@@ -1,10 +1,11 @@
-package com.pacman.system.core;
+package com.pacman.system.physical.core;
 
 import junit.framework.TestCase;
 
 import com.pacman.model.support.GameEntity;
 import com.pacman.model.support.IWorld;
-import com.pacman.system.IMovementManager;
+import com.pacman.system.physical.IMovementManager;
+import com.pacman.system.physical.core.MovementManager;
 
 public class MovementTest extends TestCase {
 
@@ -13,7 +14,7 @@ public class MovementTest extends TestCase {
 
 
 	public void setUp() {
-		movementManager =  MovementManager.getInstance();
+		movementManager =  new MovementManager();
 		entity = new GameEntity(0, 0, 0);
 	}
 

@@ -1,4 +1,4 @@
-package com.pacman.system;
+package com.pacman.system.physical;
 
 import com.pacman.model.support.GameEntity;
 

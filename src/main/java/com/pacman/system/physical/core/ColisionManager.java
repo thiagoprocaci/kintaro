@@ -1,9 +1,9 @@
-package com.pacman.system.core;
+package com.pacman.system.physical.core;
 
 import java.util.Collection;
 
 import com.pacman.model.support.GameEntity;
-import com.pacman.system.IColisionManager;
+import com.pacman.system.physical.IColisionManager;
 
 /**
  *
@@ -11,15 +11,6 @@ import com.pacman.system.IColisionManager;
  *
  */
 public class ColisionManager implements IColisionManager {
-	private static ColisionManager INSTANCE = new ColisionManager();
-
-	private ColisionManager() {
-
-	}
-
-	public static ColisionManager getInstance() {
-		return INSTANCE;
-	}
 
 	@Override
 	public boolean detectColision(GameEntity entity, GameEntity entity2) {
