@@ -1,9 +1,5 @@
 package com.pacman.model;
 
-import java.awt.Graphics;
-
-import com.pacman.image.ImageConstants;
-import com.pacman.image.ImageManager;
 import com.pacman.model.enumeration.Direction;
 import com.pacman.model.enumeration.MouthState;
 import com.pacman.model.support.GameEntity;
@@ -23,38 +19,6 @@ public class PacMan extends GameEntity {
 		super(10, 10, 3, 22, 22);
 		previousValidX = getX();
 		previousValidY = getY();
-	}
-
-	/**
-	 * Desenha PacMan
-	 */
-	@Override
-	public void paint(Graphics graphics) {
-		if (currentDirection == Direction.UP && currentMouthState == MouthState.MOUTH_CLOSED) {
-			graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.PAC_MAN_1.value()), getX(), getY(), null);
-		} else if (currentDirection == Direction.UP && currentMouthState == MouthState.MOUTH_OPENING) {
-			graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.PAC_MAN_2_UP.value()), getX(), getY(), null);
-		} else if (currentDirection == Direction.UP && currentMouthState == MouthState.MOUTH_OPENED) {
-			graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.PAC_MAN_3_UP.value()), getX(), getY(), null);
-		} else if (currentDirection == Direction.DOWN && currentMouthState == MouthState.MOUTH_CLOSED) {
-			graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.PAC_MAN_1.value()), getX(), getY(), null);
-		} else if (currentDirection == Direction.DOWN && currentMouthState == MouthState.MOUTH_OPENING) {
-			graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.PAC_MAN_2_DOWN.value()), getX(), getY(), null);
-		} else if (currentDirection == Direction.DOWN && currentMouthState == MouthState.MOUTH_OPENED) {
-			graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.PAC_MAN_3_DOWN.value()), getX(), getY(), null);
-		} else if (currentDirection == Direction.LEFT && currentMouthState == MouthState.MOUTH_CLOSED) {
-			graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.PAC_MAN_1.value()), getX(), getY(), null);
-		} else if (currentDirection == Direction.LEFT && currentMouthState == MouthState.MOUTH_OPENING) {
-			graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.PAC_MAN_2_LEFT.value()), getX(), getY(), null);
-		} else if (currentDirection == Direction.LEFT && currentMouthState == MouthState.MOUTH_OPENED) {
-			graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.PAC_MAN_3_LEFT.value()), getX(), getY(), null);
-		} else if (currentDirection == Direction.RIGHT && currentMouthState == MouthState.MOUTH_CLOSED) {
-			graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.PAC_MAN_1.value()), getX(), getY(), null);
-		} else if (currentDirection == Direction.RIGHT && currentMouthState == MouthState.MOUTH_OPENING) {
-			graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.PAC_MAN_2_RIGHT.value()), getX(), getY(), null);
-		} else if (currentDirection == Direction.RIGHT && currentMouthState == MouthState.MOUTH_OPENED) {
-			graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.PAC_MAN_3_RIGHT.value()), getX(), getY(), null);
-		}
 	}
 
 	public Direction getCurrentDirection() {

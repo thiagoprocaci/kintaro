@@ -1,15 +1,12 @@
 package com.pacman.model;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
 import com.pacman.model.support.GameEntity;
 
 /**
  * Entidade que representa a fruta que o pacMan come
- * 
+ *
  * @author Thiago Baesso Procaci
- * 
+ *
  */
 @SuppressWarnings("serial")
 public class Fruit extends GameEntity {
@@ -24,20 +21,6 @@ public class Fruit extends GameEntity {
 		} else {
 			setWidth(7);
 			setHeight(7);
-		}
-	}
-
-	/**
-	 * Desenha a fruta
-	 */
-	@Override
-	public void paint(Graphics graphics) {
-		if (isAlive()) {
-			if (special)
-				graphics.setColor(Color.GREEN);
-			else
-				graphics.setColor(Color.ORANGE);
-			graphics.fillOval(getX(), getY(), getWidth(), getHeight());
 		}
 	}
 

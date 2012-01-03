@@ -9,11 +9,17 @@ import java.util.Map;
 
 import com.pacman.model.enumeration.Direction;
 import com.pacman.model.support.IWorld;
-import com.pacman.system.physical.IEntityActionManager;
-import com.pacman.system.physical.IMovementManager;
-import com.pacman.system.physical.core.ColisionManager;
-import com.pacman.system.physical.core.MovementManager;
-import com.pacman.system.physical.core.PacManActionManager;
+import com.pacman.system.physical.IEntityActionEngine;
+import com.pacman.system.physical.IMovementEngine;
+import com.pacman.system.physical.core.ColisionEngine;
+import com.pacman.system.physical.core.MovementEngine;
+import com.pacman.system.physical.core.PacManActionEngine;
+import com.pacman.system.rendering.IEntityRenderingEngine;
+import com.pacman.system.rendering.core.BlockRenderingEngine;
+import com.pacman.system.rendering.core.FruitRenderingEngine;
+import com.pacman.system.rendering.core.GhostRenderingEngine;
+import com.pacman.system.rendering.core.PacManRenderingEngine;
+import com.pacman.system.rendering.core.ScenarioRenderingEngine;
 
 /**
  * Mundo
@@ -36,25 +42,36 @@ public class World  implements IWorld {
 	private Scenario scenario = new  Scenario();
 	private PacMan pacMan = new PacMan();
 
-	private List<IEntityActionManager> entityActionManagerList = new ArrayList<IEntityActionManager>();
+	private List<IEntityActionEngine> entityActionEngineList = new ArrayList<IEntityActionEngine>();
+	 private List<IEntityRenderingEngine> entityRenderingEngineList = new ArrayList<IEntityRenderingEngine>();
 
 	public World(Graphics graphics) {
 		this.graphics = graphics;
 
 		// TODO a injecao de dependencia nao deve ficar aqui
-		IMovementManager movementManager = new MovementManager();
-		ColisionManager colisionManager =  new ColisionManager();
-		PacManActionManager pacManActionManager = new PacManActionManager(pacMan, blocks.values(), fruits.values());
-		pacManActionManager.setColisionManager(colisionManager);
-		pacManActionManager.setMovementManager(movementManager);
+		IMovementEngine movementEngines = new MovementEngine();
+		ColisionEngine colisionEngine =  new ColisionEngine();
+		PacManActionEngine pacManActionManager = new PacManActionEngine(pacMan, blocks.values(), fruits.values());
+		pacManActionManager.setColisionEngine(colisionEngine);
+		pacManActionManager.setMovementEngine(movementEngines);
 
-		entityActionManagerList.add(pacManActionManager);
+		entityActionEngineList.add(pacManActionManager);
+
+
+		// engine de renderizacao
+		entityRenderingEngineList.add(new ScenarioRenderingEngine());
+		entityRenderingEngineList.add(new BlockRenderingEngine());
+		entityRenderingEngineList.add(new FruitRenderingEngine());
+		entityRenderingEngineList.add(new GhostRenderingEngine());
+		entityRenderingEngineList.add(new PacManRenderingEngine());
+
+
 	}
 
 	@Override
 	public void update() {
-		for (IEntityActionManager entityActionManager : entityActionManagerList) {
-			entityActionManager.act(direction);
+		for (IEntityActionEngine entityActionEngine : entityActionEngineList) {
+			entityActionEngine.act(direction);
 		}
 		direction = null;
 	}
@@ -62,21 +79,22 @@ public class World  implements IWorld {
 
 	@Override
 	public void render() {
-		scenario.paint(graphics);
+		entityRenderingEngineList.get(0).paint(graphics, scenario);
+
 		synchronized (blocks) {
 			for (Block block : blocks.values())
-				block.paint(graphics);
+				entityRenderingEngineList.get(1).paint(graphics, block);
 		}
 		synchronized (fruits) {
 			for (Fruit fruit : fruits.values())
-				fruit.paint(graphics);
+				entityRenderingEngineList.get(2).paint(graphics, fruit);
 		}
 		synchronized (ghosts) {
 			for (Ghost ghost : ghosts.values()) {
-				ghost.paint(graphics);
+				entityRenderingEngineList.get(3).paint(graphics, ghost);
 			}
 		}
-		pacMan.paint(graphics);
+		entityRenderingEngineList.get(4).paint(graphics, pacMan);
 	}
 
 	public PacMan getPacMan() {

@@ -1,15 +1,15 @@
 package com.pacman.model.support;
 
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.io.Serializable;
 
 /**
  * Entidade que representa um personagem do jogo. Qualquer objeto que tenha
  * coordenada x, y, largura e altura deve ser considerado um game entity.
  */
 @SuppressWarnings("serial")
-public class GameEntity implements IPaintable {
+public class GameEntity implements Serializable {
 
 	private int x;
 	private int y;
@@ -103,8 +103,5 @@ public class GameEntity implements IPaintable {
 		this.shape = shape;
 	}
 
-	@Override
-	public void paint(Graphics graphics) {
 
-	}
 }

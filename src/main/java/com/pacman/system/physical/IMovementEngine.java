@@ -8,7 +8,7 @@ import com.pacman.model.support.GameEntity;
 * Entidade que representa um o movimento geral de qualquer personagem do jogo.
 *
 */
-public interface IMovementManager {
+public interface IMovementEngine {
 
 	/**
 	 * Move para cima

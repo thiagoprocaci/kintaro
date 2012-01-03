@@ -7,30 +7,30 @@ import com.pacman.model.Fruit;
 import com.pacman.model.PacMan;
 import com.pacman.model.enumeration.Direction;
 import com.pacman.model.enumeration.MouthState;
-import com.pacman.system.physical.IColisionManager;
-import com.pacman.system.physical.IEntityActionManager;
-import com.pacman.system.physical.IMovementManager;
+import com.pacman.system.physical.IColisionEngine;
+import com.pacman.system.physical.IEntityActionEngine;
+import com.pacman.system.physical.IMovementEngine;
 
-public class PacManActionManager implements IEntityActionManager {
+public class PacManActionEngine implements IEntityActionEngine {
 
-	private IMovementManager movementManager;
-	private IColisionManager colisionManager;
+	private IMovementEngine movementEnginer;
+	private IColisionEngine colisionEngine;
 	private PacMan pacMan;
 	private Collection<Block> blockList;
 	private Collection<Fruit> fruitList;
 
-	public PacManActionManager(PacMan pacMan, Collection<Block> blockList, Collection<Fruit> fruitList) {
+	public PacManActionEngine(PacMan pacMan, Collection<Block> blockList, Collection<Fruit> fruitList) {
 		this.pacMan = pacMan;
 		this.blockList = blockList;
 		this.fruitList = fruitList;
 	}
 
-	public void setMovementManager(IMovementManager movementManager) {
-		this.movementManager = movementManager;
+	public void setMovementEngine(IMovementEngine movementEngine) {
+		this.movementEnginer = movementEngine;
 	}
 
-	public void setColisionManager(IColisionManager colisionManager) {
-		this.colisionManager = colisionManager;
+	public void setColisionEngine(IColisionEngine colisionEngine) {
+		this.colisionEngine = colisionEngine;
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class PacManActionManager implements IEntityActionManager {
 
 	private boolean canMove(Direction direction) {
 		move(direction);
-		if (colisionManager.detectColision(pacMan, blockList)) {
+		if (colisionEngine.detectColision(pacMan, blockList)) {
 			pacMan.setX(pacMan.getPreviousValidX());
 			pacMan.setY(pacMan.getPreviousValidY());
 			return false;
@@ -59,16 +59,16 @@ public class PacManActionManager implements IEntityActionManager {
 	private void move(Direction direction) {
 		switch (direction) {
 		case LEFT:
-			movementManager.moveLeft(pacMan);
+			movementEnginer.moveLeft(pacMan);
 			break;
 		case RIGHT:
-			movementManager.moveRight(pacMan);
+			movementEnginer.moveRight(pacMan);
 			break;
 		case UP:
-			movementManager.moveUp(pacMan);
+			movementEnginer.moveUp(pacMan);
 			break;
 		case DOWN:
-			movementManager.moveDown(pacMan);
+			movementEnginer.moveDown(pacMan);
 			break;
 		}
 	}
@@ -76,7 +76,7 @@ public class PacManActionManager implements IEntityActionManager {
 	private void eatFruit(Collection<Fruit> fruits) {
 		if (fruits != null)
 			for (Fruit fruit : fruits) {
-				if (colisionManager.detectColision(pacMan, fruit)) {
+				if (colisionEngine.detectColision(pacMan, fruit)) {
 					fruit.setAlive(false);
 					break;
 				}

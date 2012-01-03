@@ -4,17 +4,17 @@ import junit.framework.TestCase;
 
 import com.pacman.model.support.GameEntity;
 import com.pacman.model.support.IWorld;
-import com.pacman.system.physical.IMovementManager;
-import com.pacman.system.physical.core.MovementManager;
+import com.pacman.system.physical.IMovementEngine;
+import com.pacman.system.physical.core.MovementEngine;
 
 public class MovementTest extends TestCase {
 
-	private IMovementManager movementManager;
+	private IMovementEngine movementManager;
 	private GameEntity entity;
 
 
 	public void setUp() {
-		movementManager =  new MovementManager();
+		movementManager =  new MovementEngine();
 		entity = new GameEntity(0, 0, 0);
 	}
 

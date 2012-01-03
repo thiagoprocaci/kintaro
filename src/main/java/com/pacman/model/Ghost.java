@@ -1,9 +1,5 @@
 package com.pacman.model;
 
-import java.awt.Graphics;
-
-import com.pacman.image.ImageConstants;
-import com.pacman.image.ImageManager;
 import com.pacman.model.support.GameEntity;
 
 /**
@@ -21,21 +17,16 @@ public class Ghost extends GameEntity {
 		super(x, y, 5, 23, 23);
 	}
 
-	@Override
-	public void paint(Graphics graphics) {
-		if (!scared) {
-			if (shift)
-				graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.GHOST_1.value()), getX(), getY(), null);
-			else
-				graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.GHOST_2.value()), getX(), getY(), null);
-		} else {
-			if (shift)
-				graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.GHOST_SCARED_1.value()), getX(), getY(), null);
-			else
-				graphics.drawImage(ImageManager.getInstance().loadImage(ImageConstants.GHOST_SCARED_2.value()), getX(), getY(), null);
-		}
-		shift = !shift;
+	public boolean isShift() {
+		return shift;
+	}
 
+	public void setShift(boolean shift) {
+		this.shift = shift;
+	}
+
+	public boolean isScared() {
+		return scared;
 	}
 
 	public void setScared(boolean scared) {

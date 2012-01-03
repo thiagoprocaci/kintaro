@@ -2,14 +2,14 @@ package com.pacman.system.physical.core;
 
 import com.pacman.model.support.GameEntity;
 import com.pacman.model.support.IWorld;
-import com.pacman.system.physical.IMovementManager;
+import com.pacman.system.physical.IMovementEngine;
 
 /**
  *
  * Entidade que representa um o movimento geral de qualquer personagem do jogo.
  *
  */
-public class MovementManager implements IMovementManager {
+public class MovementEngine implements IMovementEngine {
 
 	@Override
 	public void moveUp(GameEntity entity) {

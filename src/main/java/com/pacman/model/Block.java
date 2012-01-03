@@ -1,8 +1,5 @@
 package com.pacman.model;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
 import com.pacman.model.support.GameEntity;
 
 /**
@@ -17,15 +14,4 @@ public class Block extends GameEntity {
 		super(x, y, 0, 30, 30);
 	}
 
-	/**
-	 * Desenha o bloco
-	 */
-	@Override
-	public void paint(Graphics graphics) {
-		graphics.setColor(Color.WHITE);
-		graphics.fillRect(getX(), getY(), getWidth(), getHeight());
-
-		graphics.setColor(Color.RED);
-		graphics.drawRect(getX(), getY(), getWidth(), getHeight());
-	}
 }
