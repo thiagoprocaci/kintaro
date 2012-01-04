@@ -48,7 +48,7 @@ public class MainFrame extends DialogFrame implements Runnable {
 			world.update();
 			world.render();
 			try {
-				Thread.sleep(100);
+				Thread.sleep(70);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -57,22 +57,23 @@ public class MainFrame extends DialogFrame implements Runnable {
 
 	@Override
 	protected void onDownPressed() {
-		world.moveDown();
+
+
 	}
 
 	@Override
 	protected void onLeftPressed() {
-		world.moveLeft();
+
 	}
 
 	@Override
 	protected void onRightPressed() {
-		world.moveRight();
+
 	}
 
 	@Override
 	protected void onUpPressed() {
-		world.moveUp();
+
 	}
 
 	@Override

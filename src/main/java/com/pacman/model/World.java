@@ -6,9 +6,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import com.pacman.model.enumeration.Direction;
 import com.pacman.model.support.IWorld;
+import com.pacman.system.event.core.EventEngine;
 import com.pacman.system.physical.IEntityActionEngine;
 import com.pacman.system.physical.IMovementEngine;
 import com.pacman.system.physical.core.ColisionEngine;
@@ -24,13 +26,9 @@ import com.pacman.system.rendering.core.ScenarioRenderingEngine;
 /**
  * Mundo
  */
-public class World  implements IWorld {
+public class World implements IWorld {
 
 	private boolean buildMode = false;
-	// a direcao devera ser pegada do buffer
-	private Direction direction;
-
-
 
 	private Graphics graphics;
 
@@ -39,24 +37,23 @@ public class World  implements IWorld {
 	private Map<String, Block> blocks = new HashMap<String, Block>();
 	private Map<String, Fruit> fruits = new HashMap<String, Fruit>();
 	private Map<String, Ghost> ghosts = new HashMap<String, Ghost>();
-	private Scenario scenario = new  Scenario();
+	private Scenario scenario = new Scenario();
 	private PacMan pacMan = new PacMan();
 
 	private List<IEntityActionEngine> entityActionEngineList = new ArrayList<IEntityActionEngine>();
-	 private List<IEntityRenderingEngine> entityRenderingEngineList = new ArrayList<IEntityRenderingEngine>();
+	private List<IEntityRenderingEngine> entityRenderingEngineList = new ArrayList<IEntityRenderingEngine>();
 
 	public World(Graphics graphics) {
 		this.graphics = graphics;
 
 		// TODO a injecao de dependencia nao deve ficar aqui
 		IMovementEngine movementEngines = new MovementEngine();
-		ColisionEngine colisionEngine =  new ColisionEngine();
+		ColisionEngine colisionEngine = new ColisionEngine();
 		PacManActionEngine pacManActionManager = new PacManActionEngine(pacMan, blocks.values(), fruits.values());
 		pacManActionManager.setColisionEngine(colisionEngine);
 		pacManActionManager.setMovementEngine(movementEngines);
 
 		entityActionEngineList.add(pacManActionManager);
-
 
 		// engine de renderizacao
 		entityRenderingEngineList.add(new ScenarioRenderingEngine());
@@ -65,22 +62,29 @@ public class World  implements IWorld {
 		entityRenderingEngineList.add(new GhostRenderingEngine());
 		entityRenderingEngineList.add(new PacManRenderingEngine());
 
-
 	}
 
 	@Override
 	public void update() {
+		Queue<Direction> directionEventList = EventEngine.getInstance().getDirectionEvents();
+		Direction direction = null;
 		for (IEntityActionEngine entityActionEngine : entityActionEngineList) {
-			entityActionEngine.act(direction);
-		}
-		direction = null;
-	}
+			if (directionEventList.isEmpty()) {
+				entityActionEngine.act(null);
+			} else {
+				while (!directionEventList.isEmpty()) {
+					direction = directionEventList.remove();
+					entityActionEngine.act(direction);
+				}
+			}
 
+		}
+
+	}
 
 	@Override
 	public void render() {
 		entityRenderingEngineList.get(0).paint(graphics, scenario);
-
 		synchronized (blocks) {
 			for (Block block : blocks.values())
 				entityRenderingEngineList.get(1).paint(graphics, block);
@@ -95,6 +99,13 @@ public class World  implements IWorld {
 			}
 		}
 		entityRenderingEngineList.get(4).paint(graphics, pacMan);
+/*		synchronized (map) {
+			for (Block block : map.values()) {
+				graphics.setColor(Color.GREEN);
+				graphics.drawRect(block.getX(), block.getY(), block.getWidth(), block.getHeight());
+
+			}
+		}*/
 	}
 
 	public PacMan getPacMan() {
@@ -117,11 +128,7 @@ public class World  implements IWorld {
 		return scenario;
 	}
 
-
-
-
-
-// ----------------------------- isso deve ficar separado
+	// ----------------------------- isso deve ficar separado
 
 	/**
 	 * Metodo utilizado para a adicao ou remocao de blocos no cenario
@@ -146,8 +153,6 @@ public class World  implements IWorld {
 					}
 			}
 	}
-
-
 
 	/**
 	 * Metodo utilizado para a adicao ou remocao de monstros no cenario
@@ -193,11 +198,6 @@ public class World  implements IWorld {
 		addOrRemoveFruit(x, y, true);
 	}
 
-
-
-
-
-
 	/**
 	 * Ativa e desativa modo de construcao do cenario
 	 *
@@ -207,24 +207,6 @@ public class World  implements IWorld {
 		this.buildMode = buildMode;
 		if (buildMode)
 			initMap();
-	}
-
-// melhorar esquema de eventos
-
-	public void moveUp() {
-		direction = Direction.UP;
-	}
-
-	public void moveDown() {
-		direction = Direction.DOWN;
-	}
-
-	public void moveLeft() {
-		direction = Direction.LEFT;
-	}
-
-	public void moveRight() {
-		direction = Direction.RIGHT;
 	}
 
 	/**
@@ -268,7 +250,5 @@ public class World  implements IWorld {
 			y = 0;
 		}
 	}
-
-
 
 }

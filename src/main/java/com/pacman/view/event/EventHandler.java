@@ -6,6 +6,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import com.pacman.system.event.core.EventEngine;
+
 /**
  * Classe responsavel por escutar os eventos disparados no frame
  *
@@ -19,6 +21,7 @@ public abstract class EventHandler extends Applet {
 			public void keyPressed(KeyEvent evt) {
 				//JOptionPane.showMessageDialog(null, "" + evt.getKeyCode());
 				// TODO criar constantes
+				EventEngine.getInstance().processEvent(evt.getKeyCode());
 				if (evt.getKeyCode() == 27) {
 					onEscapePressed();
 				} else if (evt.getKeyCode() == 38) {

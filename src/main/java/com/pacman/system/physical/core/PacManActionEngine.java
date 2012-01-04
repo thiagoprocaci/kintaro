@@ -6,7 +6,6 @@ import com.pacman.model.Block;
 import com.pacman.model.Fruit;
 import com.pacman.model.PacMan;
 import com.pacman.model.enumeration.Direction;
-import com.pacman.model.enumeration.MouthState;
 import com.pacman.system.physical.IColisionEngine;
 import com.pacman.system.physical.IEntityActionEngine;
 import com.pacman.system.physical.IMovementEngine;
@@ -35,7 +34,7 @@ public class PacManActionEngine implements IEntityActionEngine {
 
 	@Override
 	public void act(Direction direction) {
-		updateMouthState();
+		pacMan.updateMouthState();
 		if(direction != null && canMove(direction)) {
 			pacMan.setCurrentDirection(direction);
 			move(direction);
@@ -82,24 +81,5 @@ public class PacManActionEngine implements IEntityActionEngine {
 				}
 			}
 	}
-
-	/**
-	 * Atualiza o estado da boca do pacMan
-	 */
-	private void updateMouthState() {
-		switch (pacMan.getCurrentMouthState()) {
-		case MOUTH_CLOSED:
-			pacMan.setCurrentMouthState(MouthState.MOUTH_OPENING);
-			break;
-		case MOUTH_OPENING:
-			pacMan.setCurrentMouthState(MouthState.MOUTH_OPENED);
-			break;
-		default:
-			pacMan.setCurrentMouthState(MouthState.MOUTH_CLOSED);
-			break;
-		}
-	}
-
-
 
 }
