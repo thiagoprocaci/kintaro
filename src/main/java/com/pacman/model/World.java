@@ -10,10 +10,11 @@ import java.util.Queue;
 
 import com.pacman.model.enumeration.Direction;
 import com.pacman.model.support.IWorld;
+import com.pacman.system.enumeration.KeyboardCommand;
 import com.pacman.system.event.core.EventEngine;
 import com.pacman.system.physical.IEntityActionEngine;
 import com.pacman.system.physical.IMovementEngine;
-import com.pacman.system.physical.core.ColisionEngine;
+import com.pacman.system.physical.core.CollisionEngine;
 import com.pacman.system.physical.core.MovementEngine;
 import com.pacman.system.physical.core.PacManActionEngine;
 import com.pacman.system.rendering.IEntityRenderingEngine;
@@ -22,6 +23,7 @@ import com.pacman.system.rendering.core.FruitRenderingEngine;
 import com.pacman.system.rendering.core.GhostRenderingEngine;
 import com.pacman.system.rendering.core.PacManRenderingEngine;
 import com.pacman.system.rendering.core.ScenarioRenderingEngine;
+import com.pacman.system.support.MouseEvent;
 
 /**
  * Mundo
@@ -29,6 +31,7 @@ import com.pacman.system.rendering.core.ScenarioRenderingEngine;
 public class World implements IWorld {
 
 	private boolean buildMode = false;
+	private boolean shift =  false;
 
 	private Graphics graphics;
 
@@ -48,7 +51,7 @@ public class World implements IWorld {
 
 		// TODO a injecao de dependencia nao deve ficar aqui
 		IMovementEngine movementEngines = new MovementEngine();
-		ColisionEngine colisionEngine = new ColisionEngine();
+		CollisionEngine colisionEngine = new CollisionEngine();
 		PacManActionEngine pacManActionManager = new PacManActionEngine(pacMan, blocks.values(), fruits.values());
 		pacManActionManager.setColisionEngine(colisionEngine);
 		pacManActionManager.setMovementEngine(movementEngines);
@@ -79,7 +82,35 @@ public class World implements IWorld {
 			}
 
 		}
-
+		Queue<KeyboardCommand> keyboardCommandList = EventEngine.getInstance().getGeneralKeyboardEvents();
+		KeyboardCommand keyboardCommand = null;
+		while(!keyboardCommandList.isEmpty()) {
+			keyboardCommand = keyboardCommandList.remove();
+			if(keyboardCommand == KeyboardCommand.SHIFT) {
+				shift = !shift;
+			}
+		}
+		Queue<MouseEvent> mouseEventList = EventEngine.getInstance().getMouseEvents();
+		MouseEvent mouseEvent  = null;
+		while(!mouseEventList.isEmpty()) {
+			mouseEvent = mouseEventList.remove();
+			switch (mouseEvent.getPressedButton()) {
+			case LEFT:
+				if (!shift)
+					addOrRemoveBlock(mouseEvent.getX(), mouseEvent.getY());
+				else
+					addOrRemoveGhost(mouseEvent.getX(), mouseEvent.getY());
+				break;
+			case RIGHT:
+				addOrRemoveSimpleFruit(mouseEvent.getX(), mouseEvent.getY());
+				break;
+			case MIDDLE:
+				addOrRemoveSpecialFruit(mouseEvent.getX(), mouseEvent.getY());
+				break;
+			default:
+				break;
+			}
+		}
 	}
 
 	@Override

@@ -6,14 +6,14 @@ import com.pacman.model.Block;
 import com.pacman.model.Fruit;
 import com.pacman.model.PacMan;
 import com.pacman.model.enumeration.Direction;
-import com.pacman.system.physical.IColisionEngine;
+import com.pacman.system.physical.ICollisionEngine;
 import com.pacman.system.physical.IEntityActionEngine;
 import com.pacman.system.physical.IMovementEngine;
 
 public class PacManActionEngine implements IEntityActionEngine {
 
 	private IMovementEngine movementEnginer;
-	private IColisionEngine colisionEngine;
+	private ICollisionEngine collisionEngine;
 	private PacMan pacMan;
 	private Collection<Block> blockList;
 	private Collection<Fruit> fruitList;
@@ -28,8 +28,8 @@ public class PacManActionEngine implements IEntityActionEngine {
 		this.movementEnginer = movementEngine;
 	}
 
-	public void setColisionEngine(IColisionEngine colisionEngine) {
-		this.colisionEngine = colisionEngine;
+	public void setColisionEngine(ICollisionEngine collisionEngine) {
+		this.collisionEngine = collisionEngine;
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class PacManActionEngine implements IEntityActionEngine {
 
 	private boolean canMove(Direction direction) {
 		move(direction);
-		if (colisionEngine.detectColision(pacMan, blockList)) {
+		if (collisionEngine.detectColision(pacMan, blockList)) {
 			pacMan.setX(pacMan.getPreviousValidX());
 			pacMan.setY(pacMan.getPreviousValidY());
 			return false;
@@ -75,7 +75,7 @@ public class PacManActionEngine implements IEntityActionEngine {
 	private void eatFruit(Collection<Fruit> fruits) {
 		if (fruits != null)
 			for (Fruit fruit : fruits) {
-				if (colisionEngine.detectColision(pacMan, fruit)) {
+				if (collisionEngine.detectColision(pacMan, fruit)) {
 					fruit.setAlive(false);
 					break;
 				}

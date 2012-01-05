@@ -3,14 +3,14 @@ package com.pacman.system.physical.core;
 import java.util.Collection;
 
 import com.pacman.model.support.GameEntity;
-import com.pacman.system.physical.IColisionEngine;
+import com.pacman.system.physical.ICollisionEngine;
 
 /**
  *
  * Gerenciador de colisoes
  *
  */
-public class ColisionEngine implements IColisionEngine {
+public class CollisionEngine implements ICollisionEngine {
 
 	@Override
 	public boolean detectColision(GameEntity entity, GameEntity entity2) {

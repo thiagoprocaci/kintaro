@@ -2,8 +2,8 @@ package com.pacman.view;
 
 import java.awt.Graphics2D;
 
-import com.pacman.dao.WorldDao;
 import com.pacman.model.World;
+import com.pacman.view.event.EventHandler;
 
 /**
  * Tela principal do jogo
@@ -12,9 +12,8 @@ import com.pacman.model.World;
  *
  */
 @SuppressWarnings("serial")
-public class MainFrame extends DialogFrame implements Runnable {
+public class MainFrame extends EventHandler implements Runnable {
 	private boolean finish;
-	private boolean shift;
 	private Thread animationLoop;
 	private Graphics2D graphics;
 	private World world;
@@ -55,68 +54,9 @@ public class MainFrame extends DialogFrame implements Runnable {
 		}
 	}
 
-	@Override
-	protected void onDownPressed() {
-
-
-	}
-
-	@Override
-	protected void onLeftPressed() {
-
-	}
-
-	@Override
-	protected void onRightPressed() {
-
-	}
-
-	@Override
-	protected void onUpPressed() {
-
-	}
-
-	@Override
-	protected void onEnterPressed() {
-		// FIXME acao para enter
-	}
-
-	@Override
-	protected void onEscapePressed() {
-		// FIXME acao para esc
-	}
-
-	@Override
-	protected void onPausePressed() {
-		// FIXME acao para pause
-	}
-
-	@Override
-	protected void onShiftPressed() {
-		shift = !shift;
-	}
-
-	@Override
-	protected void onLeftMouseClick() {
-		if (!shift)
-			world.addOrRemoveBlock((int) getMousePosition().getX(), (int) getMousePosition().getY());
-		else
-			world.addOrRemoveGhost((int) getMousePosition().getX(), (int) getMousePosition().getY());
-	}
-
-	@Override
-	protected void onRightMouseClick() {
-		world.addOrRemoveSimpleFruit((int) getMousePosition().getX(), (int) getMousePosition().getY());
-	}
-
-	@Override
-	protected void onMiddleMouseClick() {
-		world.addOrRemoveSpecialFruit((int) getMousePosition().getX(), (int) getMousePosition().getY());
-	}
-
-	@Override
+/*	@Override
 	protected void saveWorld() {
 		// world.setName(value());
 		WorldDao.getInstance().save(world);
-	}
+	}*/
 }

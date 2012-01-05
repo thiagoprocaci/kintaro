@@ -51,7 +51,7 @@ public abstract class DialogFrame extends EventHandler {
 		return textField.getText().trim();
 	}
 
-	@Override
+//	@Override
 	protected void onSavePressed() {
 		messageLabel.setText("Nome do mundo");
 		textField.setText("");

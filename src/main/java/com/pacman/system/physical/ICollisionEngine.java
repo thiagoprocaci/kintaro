@@ -9,7 +9,7 @@ import com.pacman.model.support.GameEntity;
  * Gerenciador de colisoes
  *
  */
-public interface IColisionEngine {
+public interface ICollisionEngine {
 
 	/**
 	 * Verifica se houve colisao entre dois personagens do jogo.
