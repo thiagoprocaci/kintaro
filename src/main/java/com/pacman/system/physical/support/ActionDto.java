@@ -12,6 +12,8 @@ public class ActionDto {
 	private GameEntity mainEntity;
 
 
+	// criar um target entity
+
 	// entidades para deteccao de colisoes
 	private Map<String, Collection<? extends GameEntity>> secondaryEntities;
 
