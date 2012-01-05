@@ -1,11 +1,11 @@
 package com.pacman.system.physical;
 
-import com.pacman.model.enumeration.Direction;
+import com.pacman.system.physical.support.ActionDto;
 
 public interface IEntityActionEngine {
 
 
-	// TODO passar dto para o entity action manager
-	void act(Direction direction);
+
+	void act(ActionDto actionDto);
 
 }

@@ -1,28 +1,16 @@
 package com.pacman.system.physical.core;
 
-import java.util.Collection;
-
-import com.pacman.model.Block;
-import com.pacman.model.Fruit;
 import com.pacman.model.PacMan;
-import com.pacman.model.enumeration.Direction;
+import com.pacman.model.support.GameEntity;
 import com.pacman.system.physical.ICollisionEngine;
 import com.pacman.system.physical.IEntityActionEngine;
 import com.pacman.system.physical.IMovementEngine;
+import com.pacman.system.physical.support.ActionDto;
 
 public class PacManActionEngine implements IEntityActionEngine {
 
 	private IMovementEngine movementEnginer;
 	private ICollisionEngine collisionEngine;
-	private PacMan pacMan;
-	private Collection<Block> blockList;
-	private Collection<Fruit> fruitList;
-
-	public PacManActionEngine(PacMan pacMan, Collection<Block> blockList, Collection<Fruit> fruitList) {
-		this.pacMan = pacMan;
-		this.blockList = blockList;
-		this.fruitList = fruitList;
-	}
 
 	public void setMovementEngine(IMovementEngine movementEngine) {
 		this.movementEnginer = movementEngine;
@@ -32,20 +20,26 @@ public class PacManActionEngine implements IEntityActionEngine {
 		this.collisionEngine = collisionEngine;
 	}
 
-	@Override
-	public void act(Direction direction) {
-		pacMan.updateMouthState();
-		if(direction != null && canMove(direction)) {
-			pacMan.setCurrentDirection(direction);
-			move(direction);
-			eatFruit(fruitList);
-		}
+	// main enitity = pacman
+	// secondary = blocks + fruits
 
+	@Override
+	public void act(ActionDto actionDto) {
+		if (actionDto != null) {
+			PacMan pacMan = (PacMan) actionDto.getMainEntity();
+			pacMan.updateMouthState();
+			if (actionDto.getDirection() != null && canMove(actionDto)) {
+				pacMan.setCurrentDirection(actionDto.getDirection());
+				move(actionDto);
+				eatFruit(actionDto);
+			}
+		}
 	}
 
-	private boolean canMove(Direction direction) {
-		move(direction);
-		if (collisionEngine.detectColision(pacMan, blockList)) {
+	private boolean canMove(ActionDto actionDto) {
+		PacMan pacMan = (PacMan) actionDto.getMainEntity();
+		move(actionDto);
+		if (collisionEngine.detectColision(pacMan, actionDto.getSecondaryEntities().get("block"))) {
 			pacMan.setX(pacMan.getPreviousValidX());
 			pacMan.setY(pacMan.getPreviousValidY());
 			return false;
@@ -55,8 +49,9 @@ public class PacManActionEngine implements IEntityActionEngine {
 		return true;
 	}
 
-	private void move(Direction direction) {
-		switch (direction) {
+	private void move(ActionDto actionDto) {
+		PacMan pacMan = (PacMan) actionDto.getMainEntity();
+		switch (actionDto.getDirection()) {
 		case LEFT:
 			movementEnginer.moveLeft(pacMan);
 			break;
@@ -72,14 +67,13 @@ public class PacManActionEngine implements IEntityActionEngine {
 		}
 	}
 
-	private void eatFruit(Collection<Fruit> fruits) {
-		if (fruits != null)
-			for (Fruit fruit : fruits) {
-				if (collisionEngine.detectColision(pacMan, fruit)) {
-					fruit.setAlive(false);
-					break;
-				}
+	private void eatFruit(ActionDto actionDto) {
+		for (GameEntity entity : actionDto.getSecondaryEntities().get("fruit")) {
+			if (collisionEngine.detectColision(actionDto.getMainEntity(), entity)) {
+				entity.setAlive(false);
+				break;
 			}
+		}
 	}
 
 }

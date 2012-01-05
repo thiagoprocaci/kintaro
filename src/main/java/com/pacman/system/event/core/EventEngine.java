@@ -5,10 +5,10 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import com.pacman.model.enumeration.Direction;
-import com.pacman.system.enumeration.KeyboardCommand;
-import com.pacman.system.enumeration.MouseButton;
 import com.pacman.system.event.IEventEngine;
-import com.pacman.system.support.MouseEvent;
+import com.pacman.system.event.enumeration.KeyboardCommand;
+import com.pacman.system.event.enumeration.MouseButton;
+import com.pacman.system.event.support.MouseEvent;
 
 /**
  * Modulo para processar eventos
@@ -27,7 +27,7 @@ public class EventEngine implements IEventEngine {
 	}
 
 	private Queue<Direction> directionEventQueue = new LinkedList<Direction>();
-	private Queue<com.pacman.system.support.MouseEvent> mouseEventQueue = new LinkedList<com.pacman.system.support.MouseEvent>();
+	private Queue<com.pacman.system.event.support.MouseEvent> mouseEventQueue = new LinkedList<com.pacman.system.event.support.MouseEvent>();
 	private Queue<KeyboardCommand> keyboardCommandEvent = new LinkedList<KeyboardCommand>();
 
 

@@ -1,6 +1,6 @@
-package com.pacman.system.support;
+package com.pacman.system.event.support;
 
-import com.pacman.system.enumeration.MouseButton;
+import com.pacman.system.event.enumeration.MouseButton;
 
 public class MouseEvent {
 	private MouseButton pressedButton;

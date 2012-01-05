@@ -9,21 +9,23 @@ import java.util.Map;
 import java.util.Queue;
 
 import com.pacman.model.enumeration.Direction;
+import com.pacman.model.support.GameEntity;
 import com.pacman.model.support.IWorld;
-import com.pacman.system.enumeration.KeyboardCommand;
 import com.pacman.system.event.core.EventEngine;
+import com.pacman.system.event.enumeration.KeyboardCommand;
+import com.pacman.system.event.support.MouseEvent;
 import com.pacman.system.physical.IEntityActionEngine;
 import com.pacman.system.physical.IMovementEngine;
 import com.pacman.system.physical.core.CollisionEngine;
 import com.pacman.system.physical.core.MovementEngine;
 import com.pacman.system.physical.core.PacManActionEngine;
+import com.pacman.system.physical.support.ActionDto;
 import com.pacman.system.rendering.IEntityRenderingEngine;
 import com.pacman.system.rendering.core.BlockRenderingEngine;
 import com.pacman.system.rendering.core.FruitRenderingEngine;
 import com.pacman.system.rendering.core.GhostRenderingEngine;
 import com.pacman.system.rendering.core.PacManRenderingEngine;
 import com.pacman.system.rendering.core.ScenarioRenderingEngine;
-import com.pacman.system.support.MouseEvent;
 
 /**
  * Mundo
@@ -52,7 +54,7 @@ public class World implements IWorld {
 		// TODO a injecao de dependencia nao deve ficar aqui
 		IMovementEngine movementEngines = new MovementEngine();
 		CollisionEngine colisionEngine = new CollisionEngine();
-		PacManActionEngine pacManActionManager = new PacManActionEngine(pacMan, blocks.values(), fruits.values());
+		PacManActionEngine pacManActionManager = new PacManActionEngine();
 		pacManActionManager.setColisionEngine(colisionEngine);
 		pacManActionManager.setMovementEngine(movementEngines);
 
@@ -70,14 +72,21 @@ public class World implements IWorld {
 	@Override
 	public void update() {
 		Queue<Direction> directionEventList = EventEngine.getInstance().getDirectionEvents();
-		Direction direction = null;
+
+		ActionDto actionDto = new ActionDto();
+		actionDto.setMainEntity(pacMan);
+		Map<String, Collection<? extends GameEntity>> secondaryEntities = new HashMap<String, Collection<? extends GameEntity>>();
+		secondaryEntities.put("block", getBlocks());
+		secondaryEntities.put("fruit", getFruits());
+		actionDto.setSecondaryEntities(secondaryEntities);
+
 		for (IEntityActionEngine entityActionEngine : entityActionEngineList) {
 			if (directionEventList.isEmpty()) {
-				entityActionEngine.act(null);
+				entityActionEngine.act(actionDto);
 			} else {
 				while (!directionEventList.isEmpty()) {
-					direction = directionEventList.remove();
-					entityActionEngine.act(direction);
+					actionDto.setDirection(directionEventList.remove());
+					entityActionEngine.act(actionDto);
 				}
 			}
 

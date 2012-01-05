@@ -3,8 +3,8 @@ package com.pacman.system.event;
 import java.util.Queue;
 
 import com.pacman.model.enumeration.Direction;
-import com.pacman.system.enumeration.KeyboardCommand;
-import com.pacman.system.support.MouseEvent;
+import com.pacman.system.event.enumeration.KeyboardCommand;
+import com.pacman.system.event.support.MouseEvent;
 
 /**
  * Modulo para processar eventos

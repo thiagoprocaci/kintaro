@@ -1,4 +1,4 @@
-package com.pacman.system.enumeration;
+package com.pacman.system.event.enumeration;
 
 /**
  *
