@@ -6,7 +6,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import com.pacman.system.event.core.EventEngine;
+import com.pacman.builder.core.WorldBuilder;
+import com.pacman.model.World;
+import com.pacman.model.support.IWorld;
 
 /**
  * Classe responsavel por escutar os eventos disparados no frame
@@ -16,18 +18,36 @@ import com.pacman.system.event.core.EventEngine;
  */
 @SuppressWarnings("serial")
 public abstract class EventHandler extends Applet {
+
+	private IWorld world;
+
+
 	public EventHandler() {
+
 		addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent evt) {
 				//JOptionPane.showMessageDialog(null, "" + evt.getKeyCode());
-				EventEngine.getInstance().processKeyboardEvent(evt.getKeyCode());
+				((World) world).getEventEngine().processKeyboardEvent(evt.getKeyCode());
 			}
 		});
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent me) {
-				EventEngine.getInstance().processMouseEvent(me.getButton(), getMousePosition().getX(), (int) getMousePosition().getY());
+				((World) world).getEventEngine().processMouseEvent(me.getButton(), getMousePosition().getX(), (int) getMousePosition().getY());
 			}
 		});
+	}
+
+	public void initialize() {
+		world = WorldBuilder.getInstance().giveMeAWorld(getGraphics());
+		((World) world).setBuildMode(true);
+		setSize(((World) world).getScenario().getDimension());
+	}
+
+
+
+
+	public IWorld getWorld() {
+		return world;
 	}
 
 }

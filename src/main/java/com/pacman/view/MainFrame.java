@@ -1,8 +1,5 @@
 package com.pacman.view;
 
-import java.awt.Graphics2D;
-
-import com.pacman.model.World;
 import com.pacman.view.event.EventHandler;
 
 /**
@@ -15,16 +12,9 @@ import com.pacman.view.event.EventHandler;
 public class MainFrame extends EventHandler implements Runnable {
 	private boolean finish;
 	private Thread animationLoop;
-	private Graphics2D graphics;
-	private World world;
 
-	private void initialize() {
-		graphics = (Graphics2D) getGraphics();
-	//	world = WorldDao.getInstance().getByName("teste");
-		world = new World(graphics);
-		world.setBuildMode(true);
-		setSize(world.getScenario().getDimension());
-	}
+
+
 
 	public static void main(String[] args) {
 		new MainFrame();
@@ -44,8 +34,8 @@ public class MainFrame extends EventHandler implements Runnable {
 	@Override
 	public void run() {
 		while (!finish) {
-			world.update();
-			world.render();
+			getWorld().update();
+			getWorld().render();
 			try {
 				Thread.sleep(70);
 			} catch (InterruptedException e) {

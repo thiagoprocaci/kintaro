@@ -14,17 +14,6 @@ import com.pacman.system.event.support.MouseEvent;
  * Modulo para processar eventos
  */
 public class EventEngine implements IEventEngine {
-	// TODO nao sera singleton
-	private static EventEngine EVENT_ENGINE = new EventEngine();
-
-
-	private EventEngine(){
-
-	}
-
-	public static EventEngine getInstance(){
-		return EVENT_ENGINE;
-	}
 
 	private Queue<Direction> directionEventQueue = new LinkedList<Direction>();
 	private Queue<com.pacman.system.event.support.MouseEvent> mouseEventQueue = new LinkedList<com.pacman.system.event.support.MouseEvent>();

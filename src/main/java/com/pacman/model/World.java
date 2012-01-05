@@ -1,7 +1,6 @@
 package com.pacman.model;
 
 import java.awt.Graphics;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -11,21 +10,12 @@ import java.util.Queue;
 import com.pacman.model.enumeration.Direction;
 import com.pacman.model.support.GameEntity;
 import com.pacman.model.support.IWorld;
-import com.pacman.system.event.core.EventEngine;
+import com.pacman.system.event.IEventEngine;
 import com.pacman.system.event.enumeration.KeyboardCommand;
 import com.pacman.system.event.support.MouseEvent;
 import com.pacman.system.physical.IEntityActionEngine;
-import com.pacman.system.physical.IMovementEngine;
-import com.pacman.system.physical.core.CollisionEngine;
-import com.pacman.system.physical.core.MovementEngine;
-import com.pacman.system.physical.core.PacManActionEngine;
 import com.pacman.system.physical.support.ActionDto;
 import com.pacman.system.rendering.IEntityRenderingEngine;
-import com.pacman.system.rendering.core.BlockRenderingEngine;
-import com.pacman.system.rendering.core.FruitRenderingEngine;
-import com.pacman.system.rendering.core.GhostRenderingEngine;
-import com.pacman.system.rendering.core.PacManRenderingEngine;
-import com.pacman.system.rendering.core.ScenarioRenderingEngine;
 
 /**
  * Mundo
@@ -45,39 +35,40 @@ public class World implements IWorld {
 	private Scenario scenario = new Scenario();
 	private PacMan pacMan = new PacMan();
 
-	private List<IEntityActionEngine> entityActionEngineList = new ArrayList<IEntityActionEngine>();
-	private List<IEntityRenderingEngine> entityRenderingEngineList = new ArrayList<IEntityRenderingEngine>();
+	// injecao
+	private List<IEntityActionEngine> entityActionEngineList ;
+	private List<IEntityRenderingEngine> entityRenderingEngineList;
+	private IEventEngine eventEngine;
 
 	public World(Graphics graphics) {
 		this.graphics = graphics;
+	}
 
-		// TODO a injecao de dependencia nao deve ficar aqui
-		IMovementEngine movementEngines = new MovementEngine();
-		CollisionEngine colisionEngine = new CollisionEngine();
-		PacManActionEngine pacManActionManager = new PacManActionEngine();
-		pacManActionManager.setColisionEngine(colisionEngine);
-		pacManActionManager.setMovementEngine(movementEngines);
+	public void setEntityActionEngineList(List<IEntityActionEngine> entityActionEngineList) {
+		this.entityActionEngineList = entityActionEngineList;
+	}
 
-		entityActionEngineList.add(pacManActionManager);
+	public void setEntityRenderingEngineList(List<IEntityRenderingEngine> entityRenderingEngineList) {
+		this.entityRenderingEngineList = entityRenderingEngineList;
+	}
 
-		// engine de renderizacao
-		entityRenderingEngineList.add(new ScenarioRenderingEngine());
-		entityRenderingEngineList.add(new BlockRenderingEngine());
-		entityRenderingEngineList.add(new FruitRenderingEngine());
-		entityRenderingEngineList.add(new GhostRenderingEngine());
-		entityRenderingEngineList.add(new PacManRenderingEngine());
+	public void setEventEngine(IEventEngine eventEngine) {
+		this.eventEngine = eventEngine;
+	}
 
+	public IEventEngine getEventEngine() {
+		return eventEngine;
 	}
 
 	@Override
 	public void update() {
-		Queue<Direction> directionEventList = EventEngine.getInstance().getDirectionEvents();
+		Queue<Direction> directionEventList = eventEngine.getDirectionEvents();
 
 		ActionDto actionDto = new ActionDto();
 		actionDto.setMainEntity(pacMan);
 		Map<String, Collection<? extends GameEntity>> secondaryEntities = new HashMap<String, Collection<? extends GameEntity>>();
-		secondaryEntities.put("block", getBlocks());
-		secondaryEntities.put("fruit", getFruits());
+		secondaryEntities.put("block", blocks.values());
+		secondaryEntities.put("fruit", fruits.values());
 		actionDto.setSecondaryEntities(secondaryEntities);
 
 		for (IEntityActionEngine entityActionEngine : entityActionEngineList) {
@@ -91,7 +82,7 @@ public class World implements IWorld {
 			}
 
 		}
-		Queue<KeyboardCommand> keyboardCommandList = EventEngine.getInstance().getGeneralKeyboardEvents();
+		Queue<KeyboardCommand> keyboardCommandList = eventEngine.getGeneralKeyboardEvents();
 		KeyboardCommand keyboardCommand = null;
 		while(!keyboardCommandList.isEmpty()) {
 			keyboardCommand = keyboardCommandList.remove();
@@ -99,7 +90,7 @@ public class World implements IWorld {
 				shift = !shift;
 			}
 		}
-		Queue<MouseEvent> mouseEventList = EventEngine.getInstance().getMouseEvents();
+		Queue<MouseEvent> mouseEventList = eventEngine.getMouseEvents();
 		MouseEvent mouseEvent  = null;
 		while(!mouseEventList.isEmpty()) {
 			mouseEvent = mouseEventList.remove();
@@ -148,21 +139,7 @@ public class World implements IWorld {
 		}*/
 	}
 
-	public PacMan getPacMan() {
-		return pacMan;
-	}
 
-	public Collection<Block> getBlocks() {
-		return blocks.values();
-	}
-
-	public Collection<Fruit> getFruits() {
-		return fruits.values();
-	}
-
-	public Collection<Ghost> getGhots() {
-		return ghosts.values();
-	}
 
 	public Scenario getScenario() {
 		return scenario;
