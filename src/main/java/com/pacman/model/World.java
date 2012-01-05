@@ -1,5 +1,6 @@
 package com.pacman.model;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,8 +15,14 @@ import com.pacman.system.event.IEventEngine;
 import com.pacman.system.event.enumeration.KeyboardCommand;
 import com.pacman.system.event.support.MouseEvent;
 import com.pacman.system.physical.IEntityActionEngine;
+import com.pacman.system.physical.core.PacManActionEngine;
 import com.pacman.system.physical.support.ActionDto;
 import com.pacman.system.rendering.IEntityRenderingEngine;
+import com.pacman.system.rendering.core.BlockRenderingEngine;
+import com.pacman.system.rendering.core.FruitRenderingEngine;
+import com.pacman.system.rendering.core.GhostRenderingEngine;
+import com.pacman.system.rendering.core.PacManRenderingEngine;
+import com.pacman.system.rendering.core.ScenarioRenderingEngine;
 
 /**
  * Mundo
@@ -23,7 +30,7 @@ import com.pacman.system.rendering.IEntityRenderingEngine;
 public class World implements IWorld {
 
 	private boolean buildMode = false;
-	private boolean shift =  false;
+	private boolean shift = false;
 
 	private Graphics graphics;
 
@@ -36,63 +43,76 @@ public class World implements IWorld {
 	private PacMan pacMan = new PacMan();
 
 	// injecao
-	private List<IEntityActionEngine> entityActionEngineList ;
+	private List<IEntityActionEngine> entityActionEngineList;
 	private List<IEntityRenderingEngine> entityRenderingEngineList;
 	private IEventEngine eventEngine;
 
-	public World(Graphics graphics) {
-		this.graphics = graphics;
+	// variaveis auxiliares
+	private IEntityRenderingEngine blockRenderingEngine;
+	private IEntityRenderingEngine fruitRenderingEngine;
+	private IEntityRenderingEngine ghostRenderingEngine;
+	private IEntityRenderingEngine pacManRenderingEngine;
+	private IEntityRenderingEngine scenarioRenderingEngine;
+
+	private IEntityActionEngine pacManActionEngine;
+
+	private void initActionEngine() {
+		for (IEntityActionEngine engine : entityActionEngineList) {
+			if (engine instanceof PacManActionEngine) {
+				pacManActionEngine = engine;
+			}
+		}
 	}
 
-	public void setEntityActionEngineList(List<IEntityActionEngine> entityActionEngineList) {
-		this.entityActionEngineList = entityActionEngineList;
+	private void initRenderingEngine() {
+		for (IEntityRenderingEngine engine : entityRenderingEngineList) {
+			if (engine instanceof BlockRenderingEngine) {
+				blockRenderingEngine = engine;
+			} else if (engine instanceof FruitRenderingEngine) {
+				fruitRenderingEngine = engine;
+			} else if (engine instanceof GhostRenderingEngine) {
+				ghostRenderingEngine = engine;
+			} else if (engine instanceof PacManRenderingEngine) {
+				pacManRenderingEngine = engine;
+			} else if (engine instanceof ScenarioRenderingEngine) {
+				scenarioRenderingEngine = engine;
+			}
+		}
 	}
 
-	public void setEntityRenderingEngineList(List<IEntityRenderingEngine> entityRenderingEngineList) {
-		this.entityRenderingEngineList = entityRenderingEngineList;
-	}
-
-	public void setEventEngine(IEventEngine eventEngine) {
-		this.eventEngine = eventEngine;
-	}
-
-	public IEventEngine getEventEngine() {
-		return eventEngine;
-	}
-
-	@Override
-	public void update() {
+	private void processDirectionEvents() {
 		Queue<Direction> directionEventList = eventEngine.getDirectionEvents();
-
 		ActionDto actionDto = new ActionDto();
 		actionDto.setMainEntity(pacMan);
 		Map<String, Collection<? extends GameEntity>> secondaryEntities = new HashMap<String, Collection<? extends GameEntity>>();
 		secondaryEntities.put("block", blocks.values());
 		secondaryEntities.put("fruit", fruits.values());
 		actionDto.setSecondaryEntities(secondaryEntities);
-
-		for (IEntityActionEngine entityActionEngine : entityActionEngineList) {
-			if (directionEventList.isEmpty()) {
-				entityActionEngine.act(actionDto);
-			} else {
-				while (!directionEventList.isEmpty()) {
-					actionDto.setDirection(directionEventList.remove());
-					entityActionEngine.act(actionDto);
-				}
+		if (directionEventList.isEmpty()) {
+			pacManActionEngine.act(actionDto);
+		} else {
+			while (!directionEventList.isEmpty()) {
+				actionDto.setDirection(directionEventList.remove());
+				pacManActionEngine.act(actionDto);
 			}
-
 		}
+	}
+
+	private void processGeneralKeyboardEvents() {
 		Queue<KeyboardCommand> keyboardCommandList = eventEngine.getGeneralKeyboardEvents();
 		KeyboardCommand keyboardCommand = null;
-		while(!keyboardCommandList.isEmpty()) {
+		while (!keyboardCommandList.isEmpty()) {
 			keyboardCommand = keyboardCommandList.remove();
-			if(keyboardCommand == KeyboardCommand.SHIFT) {
+			if (keyboardCommand == KeyboardCommand.SHIFT) {
 				shift = !shift;
 			}
 		}
+	}
+
+	private void processMouseEvents() {
 		Queue<MouseEvent> mouseEventList = eventEngine.getMouseEvents();
-		MouseEvent mouseEvent  = null;
-		while(!mouseEventList.isEmpty()) {
+		MouseEvent mouseEvent = null;
+		while (!mouseEventList.isEmpty()) {
 			mouseEvent = mouseEventList.remove();
 			switch (mouseEvent.getPressedButton()) {
 			case LEFT:
@@ -113,39 +133,61 @@ public class World implements IWorld {
 		}
 	}
 
+	public World(Graphics graphics) {
+		this.graphics = graphics;
+	}
+
+	public void setEntityActionEngineList(List<IEntityActionEngine> entityActionEngineList) {
+		this.entityActionEngineList = entityActionEngineList;
+		initActionEngine();
+	}
+
+	public void setEntityRenderingEngineList(List<IEntityRenderingEngine> entityRenderingEngineList) {
+		this.entityRenderingEngineList = entityRenderingEngineList;
+		initRenderingEngine();
+	}
+
+	public void setEventEngine(IEventEngine eventEngine) {
+		this.eventEngine = eventEngine;
+	}
+
+	@Override
+	public IEventEngine getEventEngine() {
+		return eventEngine;
+	}
+
+	@Override
+	public Dimension getDimension() {
+		return scenario.getDimension();
+	}
+
+	@Override
+	public void update() {
+		processDirectionEvents();
+		processGeneralKeyboardEvents();
+		processMouseEvents();
+	}
+
 	@Override
 	public void render() {
-		entityRenderingEngineList.get(0).paint(graphics, scenario);
+		scenarioRenderingEngine.paint(graphics, scenario);
 		synchronized (blocks) {
 			for (Block block : blocks.values())
-				entityRenderingEngineList.get(1).paint(graphics, block);
+				blockRenderingEngine.paint(graphics, block);
 		}
 		synchronized (fruits) {
 			for (Fruit fruit : fruits.values())
-				entityRenderingEngineList.get(2).paint(graphics, fruit);
+				fruitRenderingEngine.paint(graphics, fruit);
 		}
 		synchronized (ghosts) {
 			for (Ghost ghost : ghosts.values()) {
-				entityRenderingEngineList.get(3).paint(graphics, ghost);
+				ghostRenderingEngine.paint(graphics, ghost);
 			}
 		}
-		entityRenderingEngineList.get(4).paint(graphics, pacMan);
-/*		synchronized (map) {
-			for (Block block : map.values()) {
-				graphics.setColor(Color.GREEN);
-				graphics.drawRect(block.getX(), block.getY(), block.getWidth(), block.getHeight());
-
-			}
-		}*/
+		pacManRenderingEngine.paint(graphics, pacMan);
 	}
 
-
-
-	public Scenario getScenario() {
-		return scenario;
-	}
-
-	// ----------------------------- isso deve ficar separado
+	// ----------------------------- isso deve ficar separado (vai morrer?)
 
 	/**
 	 * Metodo utilizado para a adicao ou remocao de blocos no cenario

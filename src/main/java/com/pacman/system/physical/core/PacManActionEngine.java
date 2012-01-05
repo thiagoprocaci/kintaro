@@ -27,7 +27,6 @@ public class PacManActionEngine implements IEntityActionEngine {
 	public void act(ActionDto actionDto) {
 		if (actionDto != null) {
 			PacMan pacMan = (PacMan) actionDto.getMainEntity();
-			pacMan.updateMouthState();
 			if (actionDto.getDirection() != null && canMove(actionDto)) {
 				pacMan.setCurrentDirection(actionDto.getDirection());
 				move(actionDto);

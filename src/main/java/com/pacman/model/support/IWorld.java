@@ -1,5 +1,9 @@
 package com.pacman.model.support;
 
+import java.awt.Dimension;
+
+import com.pacman.system.event.IEventEngine;
+
 
 /**
  *
@@ -18,4 +22,8 @@ public interface IWorld {
 	void render();
 
 	void update();
+
+	IEventEngine getEventEngine();
+
+	Dimension getDimension();
 }

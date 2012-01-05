@@ -21,18 +21,17 @@ public abstract class EventHandler extends Applet {
 
 	private IWorld world;
 
-
 	public EventHandler() {
 
 		addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent evt) {
-				//JOptionPane.showMessageDialog(null, "" + evt.getKeyCode());
-				((World) world).getEventEngine().processKeyboardEvent(evt.getKeyCode());
+				// JOptionPane.showMessageDialog(null, "" + evt.getKeyCode());
+				world.getEventEngine().processKeyboardEvent(evt.getKeyCode());
 			}
 		});
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent me) {
-				((World) world).getEventEngine().processMouseEvent(me.getButton(), getMousePosition().getX(), (int) getMousePosition().getY());
+				world.getEventEngine().processMouseEvent(me.getButton(), getMousePosition().getX(), (int) getMousePosition().getY());
 			}
 		});
 	}
@@ -40,11 +39,8 @@ public abstract class EventHandler extends Applet {
 	public void initialize() {
 		world = WorldBuilder.getInstance().giveMeAWorld(getGraphics());
 		((World) world).setBuildMode(true);
-		setSize(((World) world).getScenario().getDimension());
+		setSize(world.getDimension());
 	}
-
-
-
 
 	public IWorld getWorld() {
 		return world;

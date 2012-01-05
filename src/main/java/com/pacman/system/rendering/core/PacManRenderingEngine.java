@@ -11,8 +11,8 @@ public class PacManRenderingEngine implements IEntityRenderingEngine {
 	@Override
 	public void paint(Graphics graphics, GameEntity entity) {
 		PacMan pacMan = (PacMan) entity;
+		pacMan.updateMouthState();
 		graphics.drawImage(pacMan.getCurrentImage(), pacMan.getX(), pacMan.getY(), null);
-
 	}
 
 }
