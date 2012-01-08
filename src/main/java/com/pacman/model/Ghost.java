@@ -14,7 +14,7 @@ public class Ghost extends GameEntity {
 	private boolean shift;
 
 	public Ghost(int x, int y) {
-		super(x, y, 5, 23, 23);
+		super(x, y, 3, 23, 23);
 	}
 
 	public boolean isShift() {

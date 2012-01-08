@@ -15,6 +15,7 @@ import com.pacman.system.event.IEventEngine;
 import com.pacman.system.event.enumeration.KeyboardCommand;
 import com.pacman.system.event.support.MouseEvent;
 import com.pacman.system.physical.IEntityActionEngine;
+import com.pacman.system.physical.core.GhostActionEngine;
 import com.pacman.system.physical.core.PacManActionEngine;
 import com.pacman.system.physical.support.ActionDto;
 import com.pacman.system.rendering.IEntityRenderingEngine;
@@ -55,11 +56,14 @@ public class World implements IWorld {
 	private IEntityRenderingEngine scenarioRenderingEngine;
 
 	private IEntityActionEngine pacManActionEngine;
+	private IEntityActionEngine ghostActionEngine;
 
 	private void initActionEngine() {
 		for (IEntityActionEngine engine : entityActionEngineList) {
 			if (engine instanceof PacManActionEngine) {
 				pacManActionEngine = engine;
+			} else if (engine instanceof GhostActionEngine) {
+				ghostActionEngine = engine;
 			}
 		}
 	}
@@ -80,7 +84,7 @@ public class World implements IWorld {
 		}
 	}
 
-	private void processDirectionEvents() {
+	private void processPacManAction() {
 		Queue<Direction> directionEventList = eventEngine.getDirectionEvents();
 		ActionDto actionDto = new ActionDto();
 		actionDto.setMainEntity(pacMan);
@@ -95,6 +99,15 @@ public class World implements IWorld {
 				actionDto.setDirection(directionEventList.remove());
 				pacManActionEngine.act(actionDto);
 			}
+		}
+	}
+
+	private void processGhostAction() {
+		ActionDto actionDto = new ActionDto();
+		actionDto.setTargetEntity(pacMan);
+		for (Ghost ghost : ghosts.values()) {
+			actionDto.setMainEntity(ghost);
+			ghostActionEngine.act(actionDto);
 		}
 	}
 
@@ -163,7 +176,8 @@ public class World implements IWorld {
 
 	@Override
 	public void update() {
-		processDirectionEvents();
+		processPacManAction();
+		processGhostAction();
 		processGeneralKeyboardEvents();
 		processMouseEvents();
 	}

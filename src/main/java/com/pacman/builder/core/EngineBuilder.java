@@ -10,6 +10,7 @@ import com.pacman.system.physical.ICollisionEngine;
 import com.pacman.system.physical.IEntityActionEngine;
 import com.pacman.system.physical.IMovementEngine;
 import com.pacman.system.physical.core.CollisionEngine;
+import com.pacman.system.physical.core.GhostActionEngine;
 import com.pacman.system.physical.core.MovementEngine;
 import com.pacman.system.physical.core.PacManActionEngine;
 import com.pacman.system.rendering.IEntityRenderingEngine;
@@ -26,6 +27,7 @@ public class EngineBuilder implements IEngineBuilder {
 	private IMovementEngine movementEngine;
 	private ICollisionEngine collisionEngine;
 	private PacManActionEngine pacManActionEngine;
+	private GhostActionEngine ghostActionEngine;
 	private List<IEntityActionEngine>  actionEngineList = new ArrayList<IEntityActionEngine>();
 
 	// renderizacao
@@ -44,7 +46,12 @@ public class EngineBuilder implements IEngineBuilder {
 		pacManActionEngine.setColisionEngine(collisionEngine);
 		pacManActionEngine.setMovementEngine(movementEngine);
 
+		ghostActionEngine = new GhostActionEngine();
+		ghostActionEngine.setColisionEngine(collisionEngine);
+		ghostActionEngine.setMovementEngine(movementEngine);
+
 		actionEngineList.add(pacManActionEngine);
+		actionEngineList.add(ghostActionEngine);
 
 		// engine de renderizacao
 		scenarioRenderingEngine = new ScenarioRenderingEngine();

@@ -9,11 +9,11 @@ import com.pacman.system.physical.support.ActionDto;
 
 public class PacManActionEngine implements IEntityActionEngine {
 
-	private IMovementEngine movementEnginer;
+	private IMovementEngine movementEngine;
 	private ICollisionEngine collisionEngine;
 
 	public void setMovementEngine(IMovementEngine movementEngine) {
-		this.movementEnginer = movementEngine;
+		this.movementEngine = movementEngine;
 	}
 
 	public void setColisionEngine(ICollisionEngine collisionEngine) {
@@ -52,16 +52,16 @@ public class PacManActionEngine implements IEntityActionEngine {
 		PacMan pacMan = (PacMan) actionDto.getMainEntity();
 		switch (actionDto.getDirection()) {
 		case LEFT:
-			movementEnginer.moveLeft(pacMan);
+			movementEngine.moveLeft(pacMan);
 			break;
 		case RIGHT:
-			movementEnginer.moveRight(pacMan);
+			movementEngine.moveRight(pacMan);
 			break;
 		case UP:
-			movementEnginer.moveUp(pacMan);
+			movementEngine.moveUp(pacMan);
 			break;
 		case DOWN:
-			movementEnginer.moveDown(pacMan);
+			movementEngine.moveDown(pacMan);
 			break;
 		}
 	}
