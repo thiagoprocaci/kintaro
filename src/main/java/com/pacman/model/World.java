@@ -105,6 +105,9 @@ public class World implements IWorld {
 	private void processGhostAction() {
 		ActionDto actionDto = new ActionDto();
 		actionDto.setTargetEntity(pacMan);
+		Map<String, Collection<? extends GameEntity>> secondaryEntities = new HashMap<String, Collection<? extends GameEntity>>();
+		secondaryEntities.put("block", blocks.values());
+		actionDto.setSecondaryEntities(secondaryEntities);
 		for (Ghost ghost : ghosts.values()) {
 			actionDto.setMainEntity(ghost);
 			ghostActionEngine.act(actionDto);

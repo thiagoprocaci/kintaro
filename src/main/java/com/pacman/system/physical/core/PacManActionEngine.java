@@ -1,6 +1,7 @@
 package com.pacman.system.physical.core;
 
 import com.pacman.model.PacMan;
+import com.pacman.model.enumeration.Direction;
 import com.pacman.model.support.GameEntity;
 import com.pacman.system.physical.ICollisionEngine;
 import com.pacman.system.physical.IEntityActionEngine;
@@ -31,21 +32,28 @@ public class PacManActionEngine implements IEntityActionEngine {
 				pacMan.setCurrentDirection(actionDto.getDirection());
 				move(actionDto);
 				eatFruit(actionDto);
+				pacMan.setPreviousValidX(pacMan.getX());
+				pacMan.setPreviousValidY(pacMan.getY());
 			}
 		}
 	}
 
+	// TODO criar componente para esses metodos
+
 	private boolean canMove(ActionDto actionDto) {
 		PacMan pacMan = (PacMan) actionDto.getMainEntity();
 		move(actionDto);
+		boolean colision = true;
 		if (collisionEngine.detectColision(pacMan, actionDto.getSecondaryEntities().get("block"))) {
-			pacMan.setX(pacMan.getPreviousValidX());
-			pacMan.setY(pacMan.getPreviousValidY());
-			return false;
+			colision = false;
 		}
-		pacMan.setPreviousValidX(pacMan.getX());
-		pacMan.setPreviousValidY(pacMan.getY());
-		return true;
+		// retorna valores originais
+		if (actionDto.getDirection() == Direction.LEFT || actionDto.getDirection() == Direction.RIGHT) {
+			pacMan.setX(pacMan.getPreviousValidX());
+		} else if (actionDto.getDirection() == Direction.UP || actionDto.getDirection() == Direction.DOWN) {
+			pacMan.setY(pacMan.getPreviousValidY());
+		}
+		return colision;
 	}
 
 	private void move(ActionDto actionDto) {
