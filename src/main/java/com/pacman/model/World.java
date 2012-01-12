@@ -2,12 +2,14 @@ package com.pacman.model;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import com.pacman.dao.WorldDao;
 import com.pacman.model.enumeration.Direction;
 import com.pacman.model.support.GameEntity;
 import com.pacman.model.support.IWorld;
@@ -121,6 +123,13 @@ public class World implements IWorld {
 			keyboardCommand = keyboardCommandList.remove();
 			if (keyboardCommand == KeyboardCommand.SHIFT) {
 				shift = !shift;
+			} else if(keyboardCommand == KeyboardCommand.SAVE) {
+				scenario.setName("space");
+				try {
+					WorldDao.getInstance().save(this);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -324,6 +333,69 @@ public class World implements IWorld {
 			}
 			x += 30;
 			y = 0;
+		}
+	}
+
+	@Override
+	public PacMan getPacMan() {
+		return pacMan;
+	}
+
+	@Override
+	public void setPanMan(PacMan pacMan) {
+		this.pacMan = pacMan;
+	}
+
+	@Override
+	public Scenario getScenario() {
+		return scenario;
+	}
+
+	@Override
+	public void setScenario(Scenario scenario) {
+		this.scenario = scenario;
+
+	}
+
+	@Override
+	public Collection<Ghost> getGhosts() {
+		return ghosts.values();
+	}
+
+	@Override
+	public void setGhosts(Collection<Ghost> ghosts) {
+		if(ghosts != null) {
+			for (Ghost ghost : ghosts) {
+				this.ghosts.put(ghost.getX() + "," + ghost.getY(), ghost);
+			}
+		}
+	}
+
+	@Override
+	public Collection<Fruit> getFruits() {
+		return fruits.values();
+	}
+
+	@Override
+	public void setFruits(Collection<Fruit> fruits) {
+		if(fruits != null){
+			for (Fruit fruit : fruits) {
+				this.fruits.put(fruit.getX() + "," + fruit.getY(), fruit);
+			}
+		}
+	}
+
+	@Override
+	public Collection<Block> getBlocks() {
+		return blocks.values();
+	}
+
+	@Override
+	public void setBlocks(Collection<Block> blocks) {
+		if(blocks != null) {
+			for (Block block : blocks) {
+				this.blocks.put(block.getX() + "," + block.getY(), block);
+			}
 		}
 	}
 

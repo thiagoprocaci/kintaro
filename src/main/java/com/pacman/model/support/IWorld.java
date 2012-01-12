@@ -1,7 +1,13 @@
 package com.pacman.model.support;
 
 import java.awt.Dimension;
+import java.util.Collection;
 
+import com.pacman.model.Block;
+import com.pacman.model.Fruit;
+import com.pacman.model.Ghost;
+import com.pacman.model.PacMan;
+import com.pacman.model.Scenario;
 import com.pacman.system.event.IEventEngine;
 
 
@@ -26,4 +32,25 @@ public interface IWorld {
 	IEventEngine getEventEngine();
 
 	Dimension getDimension();
+
+	PacMan getPacMan();
+
+	void setPanMan(PacMan pacMan);
+
+	Scenario getScenario();
+
+	void setScenario(Scenario scenario);
+
+	Collection<Ghost> getGhosts();
+
+	void setGhosts(Collection<Ghost> ghosts);
+
+	Collection<Fruit> getFruits();
+
+	void setFruits(Collection<Fruit> fruits);
+
+	Collection<Block> getBlocks();
+
+	void setBlocks(Collection<Block> blocks);
+
 }

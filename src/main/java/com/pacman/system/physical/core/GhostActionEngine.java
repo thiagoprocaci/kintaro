@@ -26,7 +26,6 @@ public class GhostActionEngine implements IEntityActionEngine {
 		if (actionDto != null) {
 			Ghost ghost = (Ghost) actionDto.getMainEntity();
 			PacMan pacMan = (PacMan) actionDto.getTargetEntity();
-
 			// setando X
 			int diffX = Math.abs(pacMan.getX() - ghost.getX());
 			if (diffX < ghost.getSpeed()) {
@@ -67,6 +66,7 @@ public class GhostActionEngine implements IEntityActionEngine {
 
 		}
 	}
+
 
 	// TODO criar componente para esses metodos
 	private boolean canMove(ActionDto actionDto) {
