@@ -233,6 +233,7 @@ public class World implements IWorld {
 								blocks.remove(b.getX() + "," + b.getY());
 							else
 								blocks.put(b.getX() + "," + b.getY(), new Block(b.getX(), b.getY()));
+								System.out.println("x : " + b.getX() + " y : " + b.getY() + " width : " + b.getWidth() + " height : " + b.getHeight());
 						}
 						break;
 					}
